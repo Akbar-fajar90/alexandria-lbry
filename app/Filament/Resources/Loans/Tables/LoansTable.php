@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Rmsramos\Activitylog\Actions\ActivityLogTimelineTableAction;
 
 class LoansTable
 {
@@ -99,6 +100,18 @@ class LoansTable
                             'status' => 'cancelled',
                         ]);
                     }),
+
+                    ActivityLogTimelineTableAction::make('Activities')
+                ->withRelations(['profile', 'address'])
+                ->timelineIcons([
+                    'created' => 'heroicon-m-check-badge',
+                    'updated' => 'heroicon-m-pencil-square',
+                ])
+                ->timelineIconColors([
+                    'created' => 'info',
+                    'updated' => 'warning',
+                ])
+                ->limit(10),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
