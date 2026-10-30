@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 
 class BooksTable
 {
@@ -14,6 +15,10 @@ class BooksTable
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                    ->label('cover')
+                    ->disk('public')
+                    ->square(),
                 TextColumn::make('category.name')
                     ->searchable(),
                 TextColumn::make('title')

@@ -13,12 +13,28 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Override;
+use Illuminate\Support\Facades\Auth;
 
 class ReturnsResource extends Resource
 {
     protected static ?string $model = Returns::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (Auth::user()?->role === 'siswa') {
+            $query->whereHas('loan.member', function (Builder $q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
+
+        return $query; 
+    }
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
 
     protected static ?string $recordTitleAttribute = 'Returns';
 
@@ -35,7 +51,7 @@ class ReturnsResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ReturnItemsRelationManager::class,
+            // RelationManagers\ReturnItemsRelationManager::class,
         ];
     }
 

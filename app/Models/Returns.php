@@ -5,9 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Returns extends Model
 {
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable() 
+            ->logOnlyDirty(); 
+    }
+    
     protected $fillable = [
         'return_code',
         'loan_id',
@@ -21,6 +32,18 @@ class Returns extends Model
         return [
             'return_date' => 'date',
         ];
+    }
+
+     protected static function booted(): void
+    {
+        static::creating(function (Returns $returns) {
+            if (empty($returns->return_code)) {
+                $date = date('Ymd');
+                $latest = static::latest('id')->first();
+                $nextId = $latest ? $latest->id + 1 : 1;
+                $returns->return_code = 'RET-' . $date . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            }
+        });
     }
 
     public function loan(): BelongsTo

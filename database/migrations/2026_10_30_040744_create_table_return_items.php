@@ -13,20 +13,23 @@ return new class extends Migration
     {
         Schema::create('return_items', function (Blueprint $table) {
             $table->id();
-            $table->string('return_code')->unique();
 
-            $table->foreignId('loan_id')
-                ->unique()
-                ->constrained('loans')
+            $table->foreignId('return_id')
+                ->constrained('returns')
+                ->cascadeOnDelete(); 
+
+            $table->foreignId('loan_detail_id')
+                ->unique() 
+                ->constrained('loan_details')
                 ->restrictOnDelete();
 
-            $table->foreignId('received_by')
-                ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
+            $table->unsignedInteger('qty_returned')->default(1);
+            
+            $table->enum('item_condition', ['good', 'damaged', 'lost'])
+                ->default('good');
 
-            $table->date('return_date');
-            $table->text('notes')->nullable();
+            $table->decimal('fine', 10, 2)->default(0);
+
             $table->timestamps();
         });
     }
