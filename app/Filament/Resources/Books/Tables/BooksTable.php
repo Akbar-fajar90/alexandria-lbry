@@ -8,6 +8,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
+use Rmsramos\Activitylog\Actions\ActivityLogTimelineTableAction;
+
 
 class BooksTable
 {
@@ -49,6 +51,17 @@ class BooksTable
             ])
             ->recordActions([
                 EditAction::make(),
+                ActivityLogTimelineTableAction::make('Activities')
+                ->withRelations(['profile', 'address'])
+                ->timelineIcons([
+                    'created' => 'heroicon-m-check-badge',
+                    'updated' => 'heroicon-m-pencil-square',
+                ])
+                ->timelineIconColors([
+                    'created' => 'info',
+                    'updated' => 'warning',
+                ])
+                ->limit(10),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
