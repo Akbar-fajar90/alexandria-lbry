@@ -16,6 +16,11 @@ class CategoriesTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('books_count')
+                    ->label('Jumlah Buku')
+                    ->counts('books')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

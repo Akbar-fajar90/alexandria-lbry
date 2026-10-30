@@ -11,19 +11,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 #[Fillable(['name', 'email', 'password', 'role', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, LogsActivity;
 
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
+
+    
     protected function casts(): array
     {
         return [
@@ -46,5 +50,12 @@ class User extends Authenticatable
     public function receivedReturns(): HasMany
     {
         return $this->hasMany(Returns::class, 'received_by');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable() 
+            ->logOnlyDirty(); 
     }
 }

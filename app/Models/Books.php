@@ -5,9 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Books extends Model
 {
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable() 
+            ->logOnlyDirty(); 
+    }
+
     protected $fillable = [
         'category_id',
         'title',
@@ -15,6 +26,7 @@ class Books extends Model
         'publisher',
         'publication_year',
         'isbn',
+        'image',
         'stock',
         'shelf_location',
     ];
